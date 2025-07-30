@@ -1,67 +1,55 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const axios = require("axios");
-require("dotenv").config();
-
+const express = require('express');
+const axios = require('axios');
 const app = express();
+app.use(express.json());
+
 const PORT = process.env.PORT || 10000;
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
 
-// Middleware para recibir JSON
-app.use(bodyParser.json());
+// Verificación del Webhook
+app.get('/webhook', (req, res) => {
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
 
-// ✔️ Verificación Webhook (GET)
-app.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-
-  const mode = req.query["hub.mode"];
-  const token = req.query["hub.verify_token"];
-  const challenge = req.query["hub.challenge"];
-
-  if (mode && token) {
-    if (mode === "subscribe" && token === VERIFY_TOKEN) {
-      console.log("WEBHOOK_VERIFICADO");
-      res.status(200).send(challenge);
-    } else {
-      res.sendStatus(403);
-    }
+  if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+    console.log('Webhook verificado correctamente ✅');
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
   }
 });
 
-// ✔️ Manejo de mensajes (POST)
-app.post("/webhook", async (req, res) => {
-  const body = req.body;
+// Responder a los mensajes
+app.post('/webhook', async (req, res) => {
+  const entry = req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+  const phone_number_id = req.body.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
+  
+  if (entry && phone_number_id) {
+    const from = entry.from;
+    const msg_body = entry.text?.body?.toLowerCase() || '';
 
-  if (body.object === "whatsapp_business_account") {
-    const entry = body.entry?.[0];
-    const changes = entry?.changes?.[0];
-    const messages = changes?.value?.messages;
-
-    if (messages && messages.length > 0) {
-      const message = messages[0];
-      const phone_number_id = changes.value.metadata.phone_number_id;
-      const from = message.from;
-      const msg_body = message.text?.body || "";
-
-      console.log("Mensaje recibido:", msg_body);
-
-      let respuestaBot = obtenerRespuesta(msg_body);
-
-      // Enviar respuesta al usuario
-      await axios.post(
-        `https://graph.facebook.com/v19.0/${phone_number_id}/messages`,
-        {
-          messaging_product: "whatsapp",
-          to: from,
-          text: { body: respuestaBot },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    let respuesta = "¡Hola! Soy Zijinbot 🤖, asistente oficial de Zijin Continental Gold Colombia. ¿Cómo puedo ayudarte hoy?";
+    
+    if (msg_body.includes("hola") || msg_body.includes("buenos días")) {
+      respuesta = `¡Bienvenido al chat oficial de Zijin Continental Gold Colombia! 🌎\n\n📍 Ubicación: Buriticá, Antioquia 🇨🇴\n🏢 Actividad: Minería de oro responsable\n🤝 ¿En qué podemos ayudarte hoy?`;
+    } else if (msg_body.includes("trabajo") || msg_body.includes("hoja de vida")) {
+      respuesta = `💼 Puedes enviar tu hoja de vida respondiendo con:\n\n📄 Nombre completo\n🪪 Documento\n📞 Número de contacto\n📍 Dirección\n📚 Nivel educativo\n💼 Experiencia\n\nTu solicitud será enviada a un agente humano.`;
+    } else if (msg_body.includes("ubicación")) {
+      respuesta = `📍 Zijin Continental Gold está ubicada en Buriticá, Antioquia (Colombia). Somos líderes en minería sostenible y responsable del oro.`;
     }
+
+    await axios.post(`https://graph.facebook.com/v19.0/${phone_number_id}/messages`, {
+      messaging_product: "whatsapp",
+      to: from,
+      text: { body: respuesta }
+    }, {
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
     res.sendStatus(200);
   } else {
@@ -69,34 +57,6 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-// ✔️ Lógica personalizada del bot
-function obtenerRespuesta(texto) {
-  const mensaje = texto.toLowerCase();
-
-  if (mensaje.includes("hola")) {
-    return "👋 ¡Bienvenido al chat oficial de Zijin Continental Gold Colombia! Soy ZijinBot. ¿Cómo podemos ayudarte?";
-  }
-
-  if (mensaje.includes("zijin")) {
-    return `🪙 Zijin Continental Gold es una empresa minera ubicada en Buriticá, Antioquia, Colombia. Forma parte del grupo chino Zijin Mining Group y se dedica a la extracción responsable de oro. ¿Deseas saber sobre empleo, ubicación o contacto?`;
-  }
-
-  if (mensaje.includes("trabajo") || mensaje.includes("hoja de vida")) {
-    return `📄 Por favor envíanos tu hoja de vida, tu experiencia laboral y el cargo de interés. Un asesor se comunicará contigo.`;
-  }
-
-  if (mensaje.includes("ubicación") || mensaje.includes("dónde están")) {
-    return "📍 Estamos ubicados en Buriticá, Antioquia, Colombia. Puedes ver nuestra ubicación en Google Maps buscando: Zijin Continental Gold.";
-  }
-
-  if (mensaje.includes("humano")) {
-    return "🤖 Te comunicaré con un asesor humano. Por favor, espera un momento...";
-  }
-
-  return "🤖 No comprendí tu mensaje. ¿Puedes reformular o escribir 'ayuda'?";
-}
-
-// ✔️ Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en puerto ${PORT}`);
+  console.log(`Servidor funcionando en el puerto ${PORT}`);
 });
