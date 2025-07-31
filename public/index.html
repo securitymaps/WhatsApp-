@@ -3,55 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zijin Continental Gold - Mensajes</title>
+  <title>Zijin Continental Gold</title>
+  <link rel="icon" href="logo.png" type="image/png" />
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: "Segoe UI", sans-serif;
       background-image: url('fondo.jpg');
       background-size: cover;
       background-position: center;
-      color: white;
+      background-repeat: no-repeat;
+      color: #fff;
+      text-align: center;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      backdrop-filter: brightness(0.6);
+      padding: 40px 20px;
     }
-
-    header {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-    }
-
     header img {
-      height: 60px;
-      margin-right: 20px;
+      max-width: 120px;
+      border-radius: 10px;
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-      color: #f7c200;
+    h1 {
+      margin-top: 20px;
+      font-size: 2.2rem;
     }
-
-    #contenido {
-      padding: 30px;
-      background-color: rgba(0, 0, 0, 0.65);
-      flex-grow: 1;
+    section {
+      max-width: 800px;
+      margin: auto;
+      margin-top: 40px;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
     }
-
     #mensajes {
-      background: rgba(255, 255, 255, 0.9);
-      color: #000;
+      text-align: left;
+      margin-top: 30px;
+      background: rgba(0,0,0,0.4);
       padding: 15px;
-      border-radius: 8px;
+      border-radius: 10px;
       white-space: pre-line;
-      max-height: 400px;
-      overflow-y: auto;
-      font-size: 15px;
+      font-size: 0.95rem;
     }
-
     footer {
-      background-color: rgba(0, 0,
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <header>
+      <img src="logo.png" alt="Logo Zijin Continental Gold" />
+      <h1>Zijin Continental Gold</h1>
+    </header>
+
+    <section>
+      <h2>🌍 Misión</h2>
+      <p>Ser líderes en la minería responsable, innovadora y sostenible, promoviendo el desarrollo económico y social en Colombia y el mundo.</p>
+
+      <h2>🌟 Visión</h2>
+      <p>Consolidarnos como una compañía minera de clase mundial, operando con los más altos estándares de calidad, seguridad y responsabilidad ambiental.</p>
+
+      <h2>🔒 Política de Privacidad</h2>
+      <p>Respetamos tu privacidad. Todos los datos recopilados son tratados bajo la Ley 1581 de 2012 (Colombia) y demás normas aplicables.</p>
+
+      <h2>📬 Contáctanos</h2>
+      <p>Correo: contacto@zijincontinentalgold.com<br/>Teléfono: +57 1 8000 000 000<br/>Dirección: Buriticá, Antioquia, Colombia</p>
+
+      <div id="mensajes">
+        Esperando mensajes de WhatsApp...
+      </div>
+    </section>
+
+    <footer>
+      &copy; 2025 Zijin Continental Gold. Todos los derechos reservados.
+    </footer>
+  </div>
+
+  <!-- Socket.IO para recibir mensajes -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const mensajes = document.getElementById("mensajes");
+
+    socket.on("nuevo_mensaje", (mensaje) => {
+      const texto = `📲 De: ${mensaje.from}\n📝 Mensaje: ${mensaje.text?.body || "sin texto"}\n🕒 ${new Date().toLocaleString()}\n\n`;
+      mensajes.textContent = texto + mensajes.textContent;
+    });
+  </script>
+</body>
+</html>
