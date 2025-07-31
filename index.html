@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mensajes en Tiempo Real</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; padding: 1rem; }
+    h2 { color: #333; }
+    pre { background: #fff; padding: 1rem; border: 1px solid #ccc; max-height: 400px; overflow-y: scroll; }
+  </style>
+</head>
+<body>
+  <h2>📬 Mensajes WhatsApp Recibidos</h2>
+  <pre id="log">Cargando...</pre>
+
+  <script>
+    const log = document.getElementById("log");
+
+    async function cargarMensajes() {
+      try {
+        const res = await fetch("https://whatsapp-4t10.onrender.com/mensajes");
+        const data = await res.json();
+        log.textContent = data.map(m => `[${m.fecha}] De: ${m.de}\n${m.texto}\n`).join('\n---\n');
+      } catch (e) {
+        log.textContent = "❌ Error cargando mensajes.";
+      }
+    }
+
+    setInterval(cargarMensajes, 1000); // cada segundo
+    cargarMensajes(); // inicial
+  </script>
+</body>
+</html>
