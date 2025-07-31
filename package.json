@@ -1,11 +1,18 @@
 {
-  "name": "webhook-zijin",
+  "name": "webhook-whatsapp",
   "version": "1.0.0",
+  "description": "Servidor Express para Webhook de WhatsApp",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "express",
+    "webhook",
+    "whatsapp"
+  ],
+  "author": "Zijin Continental Gold",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2"
   }
