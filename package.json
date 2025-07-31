@@ -1,19 +1,21 @@
 {
   "name": "webhook-whatsapp",
   "version": "1.0.0",
-  "description": "Servidor Express para Webhook de WhatsApp",
-  "main": "index.js",
+  "description": "Servidor Express para Webhook de WhatsApp con soporte Socket.io",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "keywords": [
     "express",
     "webhook",
-    "whatsapp"
+    "whatsapp",
+    "socket.io"
   ],
   "author": "Zijin Continental Gold",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
   }
 }
