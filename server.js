@@ -4,9 +4,9 @@ const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 
-// Verificación del Webhook (GET)
+// Verificación del webhook (GET)
 app.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN = "mi_token_de_verificacion"; // cambia por tu token real
+  const VERIFY_TOKEN = "mi_token_de_verificacion"; // <-- Cámbialo por tu token real
 
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
@@ -31,6 +31,7 @@ app.post("/webhook", (req, res) => {
     const message = value?.messages?.[0];
 
     if (message) {
+      console.log("📨 Zijin Continental Gold: mensaje de prueba como proveedor de tecnología");
       console.log("💬 Mensaje recibido:");
       console.log(JSON.stringify(message, null, 2));
     }
@@ -43,5 +44,5 @@ app.post("/webhook", (req, res) => {
 
 // Inicio del servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor escuchando en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor webhook activo en http://localhost:${PORT}`);
 });
