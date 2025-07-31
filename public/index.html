@@ -3,78 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zijin Continental Gold - Centro de Mensajes</title>
+  <title>Zijin Continental Gold - Centro de Monitoreo de Mensajes</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f6f8;
-      color: #333;
-    }
-
-    header {
-      background-color: #d4af37;
-      padding: 20px;
-      text-align: center;
-      color: white;
-      font-size: 1.5em;
-    }
-
-    main {
-      padding: 30px;
-      display: flex;
-      justify-content: center;
-    }
-
-    #mensajes {
-      width: 100%;
-      max-width: 800px;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      font-size: 1em;
-      white-space: pre-line;
-      overflow-y: auto;
-      max-height: 70vh;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 0.85em;
-      color: #999;
-    }
+    body { margin: 0; font-family: Arial, sans-serif; background: #fafafa; color: #333; }
+    header { background: #d4af37; padding: 20px; text-align: center; }
+    header img { max-height: 60px; }
+    header h1 { margin: 5px 0 0; color: white; font-size: 1.5em; }
+    main { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+    .message { padding: 15px; margin-bottom: 15px; border-radius: 6px; background: white;
+               box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .meta { font-size: 0.9em; color: #555; margin-bottom: 8px; }
+    .text { white-space: pre-wrap; font-size: 1.1em; }
+    footer { text-align: center; padding: 20px; font-size: 0.8em; color: #777; }
+    footer a { color: #d4af37; text-decoration: none; }
   </style>
 </head>
 <body>
   <header>
-    📡 Zijin Continental Gold - Mensajes Recibidos
+    <img src="/logo.png" alt="Zijin Continental Gold">
+    <h1>Centro de Mensajes WH-API</h1>
   </header>
 
-  <main>
-    <div id="mensajes">
-      ⏳ Esperando mensajes de WhatsApp entrantes...
-    </div>
+  <main id="contenido">
+    <p>📥 Mensajes en tiempo real desde WhatsApp:</p>
+    <div id="mensajes">Esperando nuevo mensaje...</div>
   </main>
 
   <footer>
-    Sistema de Monitoreo en Tiempo Real · Proveedor de Tecnología
+    <p>© 2025 Zijin Continental Gold. All rights reserved.</p>
+    <p><a href="/politica-privacidad.html">Política de Privacidad</a> · Contáctenos: contacto@continentalgold.com</p>
   </footer>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const contenedor = document.getElementById("mensajes");
-
-    socket.on("nuevo_mensaje", (mensaje) => {
-      const texto = `📲 De: ${mensaje.from}
-📝 Mensaje: ${mensaje.text?.body || "Sin contenido"}
-🕒 Fecha: ${new Date().toLocaleString()}
-
-`;
-      contenedor.textContent = texto + contenedor.textContent;
+    const cont = document.getElementById("mensajes");
+    socket.on("nuevo_mensaje", msg => {
+      const div = document.createElement("div");
+      div.classList.add("message");
+      const from = msg.from || 'Desconocido';
+      const txt = msg.text?.body || '(sin texto)';
+      const tiempo = new Date().toLocaleString();
+      div.innerHTML = `
+        <div class="meta">📱 De: ${from} · 🕒 ${tiempo}</div>
+        <div class="text">${txt}</div>
+      `;
+      cont.prepend(div);
     });
   </script>
 </body>
