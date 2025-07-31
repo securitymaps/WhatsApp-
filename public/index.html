@@ -3,17 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zijin Continental Gold - Mensajes</title>
+  <title>Zijin Continental Gold - Centro de Mensajes</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
-    h1 { color: #d4af37; }
-    #mensajes { white-space: pre-line; background: white; padding: 15px; border-radius: 8px; max-width: 600px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #d4af37;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-size: 1.5em;
+    }
+
+    main {
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #mensajes {
+      width: 100%;
+      max-width: 800px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      font-size: 1em;
+      white-space: pre-line;
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.85em;
+      color: #999;
+    }
   </style>
 </head>
 <body>
-  <h1>Zijin Continental Gold</h1>
-  <h2>📨 Mensajes Recibidos (Proveedor de Tecnología)</h2>
-  <div id="mensajes">Esperando mensajes de WhatsApp...</div>
+  <header>
+    📡 Zijin Continental Gold - Mensajes Recibidos
+  </header>
+
+  <main>
+    <div id="mensajes">
+      ⏳ Esperando mensajes de WhatsApp entrantes...
+    </div>
+  </main>
+
+  <footer>
+    Sistema de Monitoreo en Tiempo Real · Proveedor de Tecnología
+  </footer>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -21,7 +69,11 @@
     const contenedor = document.getElementById("mensajes");
 
     socket.on("nuevo_mensaje", (mensaje) => {
-      const texto = `📲 De: ${mensaje.from}\n📝 Mensaje: ${mensaje.text?.body || "sin texto"}\n🕒 ${new Date().toLocaleString()}\n\n`;
+      const texto = `📲 De: ${mensaje.from}
+📝 Mensaje: ${mensaje.text?.body || "Sin contenido"}
+🕒 Fecha: ${new Date().toLocaleString()}
+
+`;
       contenedor.textContent = texto + contenedor.textContent;
     });
   </script>
