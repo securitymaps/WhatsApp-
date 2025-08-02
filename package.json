@@ -1,21 +1,14 @@
 {
-  "name": "webhook-whatsapp",
+  "name": "zijin-virtualbot",
   "version": "1.0.0",
-  "description": "Servidor Express para Webhook de WhatsApp con soporte Socket.io",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": [
-    "express",
-    "webhook",
-    "whatsapp",
-    "socket.io"
-  ],
-  "author": "Zijin Continental Gold",
-  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.7.2"
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "firebase-admin": "^11.0.0"
   }
 }
