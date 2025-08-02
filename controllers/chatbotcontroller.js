@@ -1,8 +1,4 @@
-// controllers/chatbotController.js
-
-const handleMessage = (message) => {
-  console.log("📩 Mensaje recibido:", message);
-  // Aquí puedes poner la lógica para responder al mensaje
+exports.handleMessage = async (req, res) => {
+  console.log("Mensaje recibido:", JSON.stringify(req.body, null, 2));
+  res.sendStatus(200);
 };
-
-module.exports = { handleMessage };
